@@ -21,10 +21,12 @@
     let it = questions[Symbol.iterator]()
     let current_question
     let shortlist = new Set()
+    let sequence_pos = 0
     renderNextQuestion()
 
     document.addEventListener('keydown', ev => {
         // console.log(ev)
+        sequence_input(ev.key)
         if (ev.key == 'ArrowRight') {
             renderNextQuestion()
         } else if (ev.key == 'Home') {
@@ -50,5 +52,19 @@
         current_question = value
         let { kanji, readings } = value;
         odai.textContent = readings[0]
+        sequence_pos = 0
+    }
+
+    function sequence_input(key) {
+        let code = 'answer'
+        if (code[sequence_pos] === key) {
+            sequence_pos++
+        } else {
+            sequence_pos = 0
+        }
+
+        if (sequence_pos === code.length) {
+            odai.textContent = current_question.kanji
+        }
     }
 })()
