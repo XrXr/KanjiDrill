@@ -3,20 +3,9 @@
     let lines = data.textContent.trim().split('\n')
     let questions = lines
         .map(l => l.trim().split(/\s+/))
-        .map(e => ({kanji: e[0], readings: e.slice(1)}))
+        .map(e => ({kanji: e[0], readings: shuffle(e.slice(1))}))
 
-    let shuffled_questions = Array(questions.length)
-    for (let q of questions) {
-        while (true) {
-            let seat = Math.trunc(Math.random() * questions.length)
-            if (shuffled_questions[seat] === undefined) {
-                shuffled_questions[seat] = q
-                break
-            }
-        }
-    }
-
-    questions = shuffled_questions
+    questions = shuffle(questions)
 
     let it = questions[Symbol.iterator]()
     let current_question
@@ -66,5 +55,19 @@
         if (sequence_pos === code.length) {
             odai.textContent = current_question.kanji
         }
+    }
+
+    function shuffle(arr) {
+        // Fisher-Yates-Durstenfeld
+        let untouched = arr.length
+        while (untouched > 0) {
+            let swapee = Math.round(Math.random() * (untouched - 1))
+            let last_idx = untouched - 1;
+            let temp = arr[swapee]
+            arr[swapee] = arr[last_idx]
+            arr[last_idx] = temp
+            untouched--
+        }
+        return arr
     }
 })()
