@@ -47,11 +47,11 @@
             shortlist.add(current_question())
         } else if (ev.key == 'q') {
             // shortlist review
-            for (let [prompt, hints] of shortlist) {
-                console.log(`"${prompt}" has hints: ${hints}`)
+            for (let [answer, prompts] of shortlist) {
+                console.log(`"${answer}" has prompts: ${prompts}`)
             }
         } else if (ev.key == 'h') {
-            odai.textContent = current_question().hints.toString()
+            odai.textContent = current_question().prompts.toString()
         }
     })
 
@@ -69,15 +69,15 @@
             .map(l => l.trim())
             .filter(l => l.length > 0)
             .map(l => l.split(/\s+/))
-            .map(e => ({prompt: e[0], hints: shuffle(e.slice(1))}))
+            .map(e => ({answer: e[0], prompts: shuffle(e.slice(1))}))
     }
 
     function renderNextQuestion() {
         let odai = document.getElementById('odai')
         if (current_idx == (questions.length - 1)) return
         current_idx++
-        let { prompt, hints } = current_question();
-        odai.textContent = hints[0]
+        let { answer, prompts } = current_question();
+        odai.textContent = prompts[0]
         key_input_sequence_pos = 0
     }
 
@@ -90,7 +90,7 @@
         }
 
         if (key_input_sequence_pos === code.length) {
-            odai.textContent = current_question().kanji
+            odai.textContent = current_question().answer
         }
     }
 
