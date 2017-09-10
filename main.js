@@ -47,7 +47,7 @@
             shortlist.add(current_question())
         } else if (ev.key == 'q') {
             // shortlist review
-            for (let [answer, prompts] of shortlist) {
+            for (let {answer, prompts} of shortlist) {
                 console.log(`"${answer}" has prompts: ${prompts}`)
             }
         } else if (ev.key == 'h') {
