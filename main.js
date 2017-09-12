@@ -18,20 +18,29 @@
         // We probably won't ever care but if the user selects two files
         // quickly in succession, it is possible to have the first file show up
         // in the end.
-        let file = ev.target.files[0]
-        if (!file) {
-            return
+        if (ev.target.files.length === 0) return
+        let promises = []
+
+        for (let i = 0; i < ev.target.files.length; i++) {
+            promises.push(new Promise((resolve, reject) => {
+                let reader = new FileReader()
+                reader.readAsArrayBuffer(ev.target.files[i])
+                reader.onloadend = () => {
+                    if (reader.readyState === FileReader.DONE) {
+                        let array_buffer = reader.result
+                        let decoder = new TextDecoder('utf-8')
+                        let quiz_file_content = decoder.decode(array_buffer)
+                        resolve(quiz_file_content)
+                    } else {
+                        reject()
+                    }
+                }
+            }))
         }
-        let reader = new FileReader()
-        reader.readAsArrayBuffer(ev.target.files[0])
-        reader.onloadend = () => {
-            if (reader.readyState === FileReader.DONE) {
-                let array_buffer = reader.result
-                let decoder = new TextDecoder("utf-8")
-                let quiz_file_content = decoder.decode(array_buffer)
-                start(quiz_file_content)
-            }
-        }
+
+        Promise.all(promises).then(results => {
+            start(results.join('\n'))
+        })
     })
 
     document.addEventListener('keydown', ev => {
